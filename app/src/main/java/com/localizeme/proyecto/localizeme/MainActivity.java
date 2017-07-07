@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setContentView(R.layout.content_main);
 
         //Conectar el UI con la Actividad
         tvLocalidad= (TextView) findViewById(R.id.tvLocalidad);
@@ -73,10 +73,10 @@ public class MainActivity extends AppCompatActivity
         initGoogleAPIClient();
 
         //conectar con btns de la activity
-        Button news = (Button)findViewById(R.id.news);
+        FloatingActionButton news = (FloatingActionButton)findViewById(R.id.news);
         news.setOnClickListener(this);
 
-        Button maps = (Button)findViewById(R.id.maps);
+        FloatingActionButton maps = (FloatingActionButton)findViewById(R.id.maps);
         maps.setOnClickListener(this);
     }
 
@@ -219,9 +219,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLocationChanged(Location location) {
         mCurrentLocation = location;
+        refreshUI();
         tvLocalidad.setText(localidad);
         tvLatLong.setText(latitud+" ; "+longitud);
-        refreshUI();
         this.setLocation();
     }
 
