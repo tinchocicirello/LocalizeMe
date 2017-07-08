@@ -19,7 +19,7 @@
         tools:layout_constraintTop_creator="1"
         tools:layout_constraintRight_creator="1"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="44dp"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,42 +29,69 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cargando tu ubicación..."
+        android:textColor="@color/colorPrimary"
+        android:layout_marginStart="10dp"
         tools:layout_constraintTop_creator="1"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="22dp"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="@+id/textView"
-        android:layout_marginLeft="28dp" />
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:id="@+id/tvTemperatura"
+        android:layout_width="149dp"
+        android:layout_height="23dp"
+        android:text="Cargando temperatura..."
+        android:layout_marginStart="7dp"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/tvLat"
+        android:layout_marginTop="12dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="22dp"
+        app:layout_constraintTop_toTopOf="@+id/ivBrujula"
+        app:layout_constraintLeft_toRightOf="@+id/ivBrujula"
+        android:layout_marginLeft="7dp" />
 
     <ImageView
         android:id="@+id/ivBrujula"
-        android:layout_width="217dp"
-        android:layout_height="0dp"
+        android:layout_width="140dp"
+        android:layout_height="144dp"
         app:srcCompat="@drawable/brujula"
         tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="@+id/tvLatLong"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="46dp"
+        android:layout_marginStart="29dp"
+        android:layout_marginTop="76dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvLocalidad"
         tools:layout_constraintLeft_creator="1"
-        android:layout_marginBottom="39dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvLocalidad" />
+        android:layout_marginLeft="36dp" />
 
     <TextView
-        android:id="@+id/tvLatLong"
+        android:id="@+id/tvLat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cargando coordenadas..."
-        tools:layout_constraintRight_creator="1"
+        android:text="Cargando latitud..."
         tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="30dp"
-        app:layout_constraintRight_toRightOf="@+id/ivBrujula"
-        android:layout_marginBottom="78dp"
-        android:layout_marginRight="30dp" />
+        app:layout_constraintBottom_toTopOf="@+id/tvLong"
+        android:layout_marginStart="7dp"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="18dp"
+        app:layout_constraintLeft_toRightOf="@+id/ivBrujula"
+        android:layout_marginLeft="7dp" />
+
+    <TextView
+        android:id="@+id/tvLong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cargando longitud..."
+        tools:layout_constraintBottom_creator="1"
+        android:layout_marginStart="7dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivBrujula"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="35dp"
+        app:layout_constraintLeft_toRightOf="@+id/ivBrujula"
+        android:layout_marginLeft="7dp" />
 
 
 </android.support.constraint.ConstraintLayout>

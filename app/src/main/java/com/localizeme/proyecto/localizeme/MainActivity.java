@@ -26,12 +26,23 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
+
+import http.HttpClient;
+import http.OnHttpRequestComplete;
+import http.Response;
+
+//Import para httpUrlConection
+
 
 
 public class MainActivity extends AppCompatActivity
@@ -41,8 +52,14 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getName();
 
     private TextView tvLocalidad;
-    private TextView tvLatLong;
+    private TextView tvLat;
+    private TextView tvLong;
 
+
+    private TextView tvTemperatura;
+
+
+    private String provincia;
     private String localidad;
     private double latitud;
     private double longitud;
@@ -64,7 +81,8 @@ public class MainActivity extends AppCompatActivity
 
         //Conectar el UI con la Actividad
         tvLocalidad= (TextView) findViewById(R.id.tvLocalidad);
-        tvLatLong = (TextView) findViewById(R.id.tvLatLong);
+        tvLat = (TextView) findViewById(R.id.tvLat);
+        tvLong = (TextView) findViewById(R.id.tvLong);
 
         //Solicitar permisos si es necesario (Android 6.0+)
         requestPermissionIfNeedIt();
@@ -221,7 +239,10 @@ public class MainActivity extends AppCompatActivity
         mCurrentLocation = location;
         refreshUI();
         tvLocalidad.setText(localidad);
-        tvLatLong.setText(latitud+" ; "+longitud);
+        tvLat.setText("Lat:"+latitud);
+        tvLong.setText("Long:"+longitud);
+
+
         this.setLocation();
     }
 
@@ -241,12 +262,87 @@ public class MainActivity extends AppCompatActivity
                 if (!list.isEmpty()) {
                     Address address = list.get(0);
                     localidad = address.getLocality();
-                    tvLocalidad.setText(localidad);
+                    provincia = address.getAdminArea();
+                    tvLocalidad.setText(localidad+", "+provincia);
+
+                    //Obtenemos temperatura
+                    obtenerTemperatura();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    //Metodo que vamos a usar para consumir la API de clima de yahoo y para parsear el json que nos devuelve
+    public void obtenerTemperatura(){
+        tvTemperatura = (TextView) findViewById(R.id.tvTemperatura);
+        HttpClient client = new HttpClient(new OnHttpRequestComplete() {
+
+
+
+            @Override
+
+            public void onComplete(Response status) {
+                //Verificamos que haya respondido la peticion
+                if (status.isSuccess()){
+                    Gson gson = new GsonBuilder().create();
+
+                    try{
+                        JSONObject jsono = new JSONObject(status.getResult());
+                        Tiempo t = gson.fromJson(status.getResult(), Tiempo.class);
+
+
+                        //Esto se podria borrar porque esta en desuso y se utilizaria para un JsonArray
+
+                        /*
+                        JSONArray jsonarray = jsono.getJSONArray("records");
+                        ArrayList<Person> ListaPersonas = new ArrayList<Person>();
+                            for (int i = 0; i < jsonarray.length();i++)
+                                {
+                                    String person = jsonarray.getString(i);
+                                    Person p = gson.fromJson (person, Person.class);
+
+                                    textoTest.setText(p.getName());
+
+                                }
+                                */
+
+                        Double centigrados;
+
+                    centigrados = Double.parseDouble(t.getQuery().getResults().getChannel().getItem().getCondition().getTemp());
+                    centigrados = (centigrados - 32) * 5/9;
+
+                        DecimalFormat formato = new DecimalFormat("0.0");
+
+
+                        tvTemperatura.setText(formato.format(centigrados) + " °C");
+
+//                        tvTemperatura.setText(t.getQuery().getResults().getChannel().getItem().getCondition().getTemp());
+
+                    }
+                    catch(Exception e)
+                    {
+
+                    }
+
+                    //Si queremos mostrar el json completo en un toast
+                    //Toast.makeText(MainActivity.this, status.getResult(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+        //URL de prueba
+        //client.excecute("https://query.yahooapis.com/v1/public/yql?q=select%20item.condition.temp%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22Castelar%2C%20Buenos%20Aires%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys");
+        String provApiYahoo;
+        String locApiYahoo;
+
+        //Guardamos las variables de localidad y provincia, y remplazamos los espacios para evitar fallas en la url generada
+        provApiYahoo = provincia.replaceAll(" ", "%20");
+        locApiYahoo = localidad.replaceAll(" ", "%20");
+        client.excecute("https://query.yahooapis.com/v1/public/yql?q=select%20item.condition.temp%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22"+ locApiYahoo +"%2C%20" + provApiYahoo + "%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys");
     }
 
 }
